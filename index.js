@@ -23,6 +23,10 @@ const queryHandler = (req, res, next) => {
 		.catch(next);
 };
 
+app.set('views', path.join(__dirname, 'views'));
+
+app.set('view engine', 'pug');
+
 app.use(limitRate());
 
 app.get('/', (req, res) => {

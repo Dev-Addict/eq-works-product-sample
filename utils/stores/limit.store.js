@@ -17,7 +17,10 @@ class LimitStore {
 
 		this.hits[key] = totalHits;
 
-		return totalHits;
+		return {
+			totalHits,
+			resetDate: new Date(this.cronJob.nextDate().ts).toISOString(),
+		};
 	}
 }
 

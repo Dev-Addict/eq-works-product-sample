@@ -11,19 +11,20 @@ exports.limitRate = ({
 	return (req, res, next) => {
 		const key = getIp(req);
 
-		if (!key) {
+		if (!key)
 			return res.status(400).json({
 				message: "couldn't resolve the ip address.",
 			});
-		}
 
-		if (store.hits[key] >= maxRequests) {
-			return res.status(429).json({
-				message: 'too many requests in a short period.',
-			});
-		}
+		const {totalHits, resetDate} = store.newHit(key);
 
-		const totalHits = store.newHit(key);
+		if (totalHits > maxRequests) {
+			if (req.xhr || req.headers.accept.indexOf('json') > -1)
+				return res.status(429).json({
+					message: 'too many requests in a short period.',
+				});
+			else return res.status(429).render('_429', {date: resetDate});
+		}
 
 		res.setHeader('X-RateLimit-Limit', maxRequests);
 		res.setHeader('X-RateLimit-Remaining', maxRequests - totalHits);
