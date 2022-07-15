@@ -1,8 +1,12 @@
 const {LimitStore} = require('../utils/stores/limit.store');
 const {getIp} = require('../utils/get-ip.util');
 
-exports.limitRate = ({cronPattern = '* * * * *', maxRequests = 5} = {}) => {
-	const store = new LimitStore({cronPattern});
+exports.limitRate = ({
+	cronPattern = '* * * * *',
+	maxRequests = 5,
+	Store = LimitStore,
+} = {}) => {
+	const store = Store.getInstance({cronPattern});
 
 	return (req, res, next) => {
 		const key = getIp(req);

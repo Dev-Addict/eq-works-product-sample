@@ -21,4 +21,11 @@ class LimitStore {
 	}
 }
 
+LimitStore.getInstance = function ({cronPattern = '* * * * *'}) {
+	if (!LimitStore.limitStoreInstance)
+		LimitStore.limitStoreInstance = new LimitStore({cronPattern});
+
+	return LimitStore.limitStoreInstance;
+};
+
 exports.LimitStore = LimitStore;
