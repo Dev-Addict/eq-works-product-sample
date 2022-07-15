@@ -23,13 +23,14 @@ const queryHandler = (req, res, next) => {
 		.catch(next);
 };
 
-app.get('/', limitRate(), (req, res) => {
+app.use(limitRate());
+
+app.get('/', (req, res) => {
 	res.send('Welcome to EQ Works 😎');
 });
 
 app.get(
 	'/events/hourly',
-	limitRate(),
 	(req, res, next) => {
 		req.sqlQuery = `
         SELECT date, hour, events
@@ -44,7 +45,6 @@ app.get(
 
 app.get(
 	'/events/daily',
-	limitRate(),
 	(req, res, next) => {
 		req.sqlQuery = `
         SELECT date, SUM (events) AS events
@@ -60,7 +60,6 @@ app.get(
 
 app.get(
 	'/stats/hourly',
-	limitRate(),
 	(req, res, next) => {
 		req.sqlQuery = `
         SELECT date, hour, impressions, clicks, revenue
@@ -75,7 +74,6 @@ app.get(
 
 app.get(
 	'/stats/daily',
-	limitRate(),
 	(req, res, next) => {
 		req.sqlQuery = `
         SELECT date,
@@ -94,7 +92,6 @@ app.get(
 
 app.get(
 	'/poi',
-	limitRate(),
 	(req, res, next) => {
 		req.sqlQuery = `
         SELECT *
