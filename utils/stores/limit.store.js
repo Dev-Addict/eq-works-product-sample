@@ -1,17 +1,21 @@
+const {CronJob} = require('cron');
+
 class LimitStore {
-	constructor({duration = 60000} = {}) {
-		this.duration = duration;
+	constructor({cronPattern = '* * * * *'} = {}) {
+		this.cronPattern = cronPattern;
 		this.hits = {};
+
+		this.cronJob = new CronJob(this.cronPattern, () => {
+			this.hits = {};
+		});
+
+		this.cronJob.start();
 	}
 
 	newHit(key) {
 		const totalHits = (this.hits[key] || 0) + 1;
 
 		this.hits[key] = totalHits;
-
-		setTimeout(() => {
-			this.hits[key] = (this.hits[key] || 1) - 1;
-		}, this.duration);
 
 		return totalHits;
 	}

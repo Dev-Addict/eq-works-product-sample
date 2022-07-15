@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/EQWorks/ws-product-nodejs#readme",
   "dependencies": {
+    "cron": "^2.1.0",
     "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "pg": "^8.5.1"
