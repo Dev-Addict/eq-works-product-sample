@@ -106,6 +106,56 @@ app.get(
 	queryHandler
 );
 
+app.get(
+	'/poi/stats',
+	(req, res, next) => {
+		req.sqlQuery = `
+        SELECT poi_id,
+               SUM(impressions) AS impressions,
+               SUM(clicks)      AS clicks,
+               SUM(revenue)     AS revenue
+        FROM public.hourly_stats
+        GROUP BY poi_id
+        ORDER BY poi_id
+		`;
+		return next();
+	},
+	queryHandler
+);
+
+app.get(
+	'/poi/events',
+	(req, res, next) => {
+		req.sqlQuery = `
+        SELECT poi_id,
+               SUM(events) AS events
+        FROM public.hourly_events
+        GROUP BY poi_id
+        ORDER BY poi_id
+		`;
+		return next();
+	},
+	queryHandler
+);
+
+app.get(
+	'/poi/stats-events',
+	(req, res, next) => {
+		req.sqlQuery = `
+        SELECT poi_id,
+               SUM(impressions)                                                           AS impressions,
+               SUM(clicks)                                                                AS clicks,
+               SUM(revenue)                                                               AS revenue,
+               (SELECT SUM(events) FROM public.hourly_events e WHERE e.poi_id = s.poi_id) AS events
+        FROM public.hourly_stats s
+        GROUP BY poi_id
+        ORDER BY poi_id
+		`;
+		return next();
+	},
+	queryHandler
+);
+
 app.listen(process.env.PORT || 5555, (err) => {
 	if (err) {
 		console.error(err);
